@@ -15,9 +15,13 @@ Pre-requisites:
 
 # Import the core libraries
 import maads
+
+# You may need to comment this out if NOT using jupyter notebook
 import nest_asyncio
+
 import json
 
+# You may need to comment this out if NOT using jupyter notebook
 nest_asyncio.apply()
 
 ```
