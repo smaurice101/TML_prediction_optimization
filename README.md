@@ -85,7 +85,11 @@ result=maads.vipercreatejointopicstreams(VIPERTOKEN,VIPERHOST,VIPERPORT,joinedto
 print(result)
 
 #Load the JSON object and get producerid
-y = json.loads(result)
+try:
+  y = json.loads(result,strict='False')
+except Exception as e:
+  y = json.loads(result)
+
 producerid=y['ProducerId']
 
 # Subscribe consumer to the topic just created with some information about yourself
@@ -97,20 +101,15 @@ result=maads.vipersubscribeconsumer(VIPERTOKEN,VIPERHOST,VIPERPORT,joinedtopic,c
                                     brokerhost,brokerport,groupid,microserviceid)
 print(result)
 # Load the JSON object and extract the consumer id
-y = json.loads(result)
+try:
+  y = json.loads(result,strict='False')
+except Exception as e:
+  y = json.loads(result)
+
 consumerid=y['Consumerid']
 print(consumerid)
 
 
-```
-
-    {"WARN":"Topic already exists","ProducerId":"ProducerId-w12uV0QiPx8nAegnvIW9A6UYBxBxJP","Topic":"joined-viper-test20"}
-    {"Consumerid":"ConsumerId-dcmn1YGcfexRBJyIFoi9sceThEqtO0","Topic":"joined-viper-test20"}
-    ConsumerId-dcmn1YGcfexRBJyIFoi9sceThEqtO0
-    
-
-
-```python
 #############################################################################################################
 #                                    PRODUCE TO TOPIC STREAM
 
@@ -125,11 +124,14 @@ startingoffset=-1
 delay=10000
 
 # Call the Python function to produce data from all the streams
-result2=maads.viperproducetotopicstream(VIPERTOKEN,VIPERHOST,VIPERPORT,joinedtopic,producerid,
+result=maads.viperproducetotopicstream(VIPERTOKEN,VIPERHOST,VIPERPORT,joinedtopic,producerid,
                                         startingoffset,rollbackoffsets,enabletls,
                                         delay,brokerhost,brokerport,microserviceid)
-#print(result2)
-y = json.loads(result2)
+try:
+  y = json.loads(result,strict='False')
+except Exception as e:
+  y = json.loads(result)
+
 #get the partition
 for elements in y:
   try:
@@ -138,10 +140,6 @@ for elements in y:
   except Exception as e:
     continue
     
-```
-
-
-```python
 #############################################################################################################
 #                           CREATE TOPIC TO SAVE TRAINING DATA SET FROM STREAM
 
@@ -149,11 +147,14 @@ for elements in y:
 producetotopic="trainingdata2"
 description="Topic containing the training dataset for TML"
 
-result3=maads.vipercreatetopic(VIPERTOKEN,VIPERHOST,VIPERPORT,producetotopic,companyname,
+result=maads.vipercreatetopic(VIPERTOKEN,VIPERHOST,VIPERPORT,producetotopic,companyname,
                                myname,myemail,mylocation,description,enabletls,
                                brokerhost,brokerport,numpartitions,replication,microserviceid)
 # Load the JSON and get the producer id 
-y = json.loads(result3)
+try:
+  y = json.loads(result,strict='False')
+except Exception as e:
+  y = json.loads(result)
 producetotopic=y['Topic']
 producerid=y['ProducerId']
 
@@ -162,12 +163,16 @@ producerid=y['ProducerId']
 
 consumefrom=joinedtopic
 description="Subscribing to training dataset"
-result3=maads.vipersubscribeconsumer(VIPERTOKEN,VIPERHOST,VIPERPORT,consumefrom,companyname,
+result=maads.vipersubscribeconsumer(VIPERTOKEN,VIPERHOST,VIPERPORT,consumefrom,companyname,
                                     myname,myemail,mylocation,description,
                                     brokerhost,brokerport,groupid,microserviceid)
 #print(result3)
 # Load the JSON and extract the consumerid
-y = json.loads(result3)
+try:
+  y = json.loads(result,strict='False')
+except Exception as e:
+  y = json.loads(result)
+
 consumerid=y['Consumerid']
 # Assign the dependent variable stream
 dependentvariable="viperdependentvariable"
@@ -177,22 +182,20 @@ independentvariables="viperindependentvariable1,viperindependentvariable2"
 # before backing out - for large datasets or slow internet connection you may
 # need to adjust this variable
 delay=60000
-result4=maads.vipercreatetrainingdata(VIPERTOKEN,VIPERHOST,VIPERPORT,consumefrom,producetotopic,
+result=maads.vipercreatetrainingdata(VIPERTOKEN,VIPERHOST,VIPERPORT,consumefrom,producetotopic,
                              dependentvariable,independentvariables, 
                              consumerid,producerid,companyname,partition,
                              enabletls,delay,brokerhost,brokerport,microserviceid)
 
-print(result4)
 # Load the JSON object and extract the Kafka partition for the training dataset 
-y = json.loads(result4)
+try:
+  y = json.loads(result,strict='False')
+except Exception as e:
+  y = json.loads(result)
 partition_training=y['Partition']
 print(partition_training)
 
 
-```
-
-
-```python
 #############################################################################################################
 #                         SUBSCRIBE TO TRAINING DATA TOPIC  
 
@@ -201,7 +204,10 @@ description="Subscribing to training dataset topic"
 result=maads.vipersubscribeconsumer(VIPERTOKEN,VIPERHOST,VIPERPORT,producetotopic,companyname,
                                     myname,myemail,mylocation,description,
                                     brokerhost,brokerport,groupid,microserviceid)
-y = json.loads(result)
+try:
+  y = json.loads(result,strict='False')
+except Exception as e:
+  y = json.loads(result)
 consumeridtrainingdata2=y['Consumerid']
 
 #############################################################################################################
@@ -210,13 +216,15 @@ consumeridtrainingdata2=y['Consumerid']
 consumefrom=producetotopic
 producetotopic="trainined-params"
 description="Topic to store the trained machine learning parameters"
-result5=maads.vipercreatetopic(VIPERTOKEN,VIPERHOST,VIPERPORT,producetotopic,companyname,
+result=maads.vipercreatetopic(VIPERTOKEN,VIPERHOST,VIPERPORT,producetotopic,companyname,
                                myname,myemail,mylocation,description,enabletls,
                                brokerhost,brokerport,numpartitions,replication,
                                microserviceid='')
-print(result5)
 # Load JSON data and extract the producer id
-y = json.loads(result5)
+try:
+  y = json.loads(result,strict='False')
+except Exception as e:
+  y = json.loads(result)
 producetotopic=y['Topic']
 producerid=y['ProducerId']
 
@@ -235,14 +243,16 @@ offset=-1
 islogistic=0
 # set network timeout for communication between VIPER and HPDE in seconds
 networktimeout=200
-result6=maads.viperhpdetraining(VIPERTOKEN,VIPERHOST,VIPERPORT,consumefrom,producetotopic,
+result=maads.viperhpdetraining(VIPERTOKEN,VIPERHOST,VIPERPORT,consumefrom,producetotopic,
                                 companyname,consumeridtrainingdata2,producerid, hpdehost,
                                 viperconfigfile,enabletls,partition_training,
                                 deploy,modelruns,hpdeport,offset,islogistic,
                                 brokerhost,brokerport,networktimeout,microserviceid)    
-print(result6)
 # Load the JSON and extract the producer id and algorithm key if needed
-y = json.loads(result6)
+try:
+  y = json.loads(result,strict='False')
+except Exception as e:
+  y = json.loads(result)
 algokey=y['Algokey']
 hpdetraining_partition=y['Partition']
 
@@ -257,7 +267,10 @@ result=maads.vipersubscribeconsumer(VIPERTOKEN,VIPERHOST,VIPERPORT,producetotopi
                                     myname,myemail,mylocation,description,
                                     brokerhost,brokerport,groupid,microserviceid)
 # Load the JSON and extract the consumer id
-y = json.loads(result)
+try:
+  y = json.loads(result,strict='False')
+except Exception as e:
+  y = json.loads(result)
 consumeridtraininedparams=y['Consumerid']
 print(consumeridtraininedparams)
 consumefrom=producetotopic
@@ -271,9 +284,12 @@ result=maads.vipercreatetopic(VIPERTOKEN,VIPERHOST,VIPERPORT,producetotopic,comp
                               myname,myemail,mylocation,description,enabletls,
                               brokerhost,brokerport,numpartitions,replication,
                               microserviceid)
-print(result)
+#print(result)
 # Load the JSON and extract the producer id
-y = json.loads(result)
+try:
+  y = json.loads(result,strict='False')
+except Exception as e:
+  y = json.loads(result)
 produceridhyperprediction=y['ProducerId']
 print(produceridhyperprediction)
 
@@ -283,9 +299,12 @@ print(produceridhyperprediction)
 result=maads.vipersubscribeconsumer(VIPERTOKEN,VIPERHOST,VIPERPORT,producetotopic,companyname,
                                     myname,myemail,mylocation,description,
                                     brokerhost,brokerport,groupid,microserviceid)
-print(result)
+#print(result)
 # Load the JSON and extract the consumer id
-y = json.loads(result)
+try:
+  y = json.loads(result,strict='False')
+except Exception as e:
+  y = json.loads(result)
 streamconsumerid=y['Consumerid']
 consumefrom=producetotopic
 
@@ -326,7 +345,10 @@ result=maads.vipercreatetopic(VIPERTOKEN,VIPERHOST,VIPERPORT,producetotopic,comp
                               microserviceid='')
 print(result)
 # Load the JSON and extract the producer id
-y = json.loads(result)
+try:
+  y = json.loads(result,strict='False')
+except Exception as e:
+  y = json.loads(result)
 producerid=y['ProducerId']
 #############################################################################################################
 #                                     START MATHEMATICAL OPTIMIZATION FROM ALGORITHM
@@ -356,9 +378,5 @@ result7=maads.viperhpdeoptimize(VIPERTOKEN,VIPERHOST,VIPERPORT,consumefrom,produ
                                 brokerhost,brokerport,timeout,microserviceid)
 print(result7)
 
-```
-
-
-```python
 
 ```
