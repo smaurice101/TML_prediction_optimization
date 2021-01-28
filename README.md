@@ -301,7 +301,7 @@ def performPredictionOptimization():
       result=maads.vipersubscribeconsumer(VIPERTOKEN,VIPERHOST,VIPERPORT,producetotopic,companyname,
                                           myname,myemail,mylocation,description,
                                           brokerhost,brokerport,groupid,microserviceid)
-      #print(result)
+      print(result)
       # Load the JSON and extract the consumer id
       try:
         y = json.loads(result,strict='False')
