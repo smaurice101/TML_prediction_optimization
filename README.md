@@ -391,7 +391,11 @@ def performPredictionOptimization():
 # Change this to any number
 numpredictions=1000
 
-for j in range(numpredictions):  
-  performPredictionOptimization()   
+for j in range(numpredictions):
+  try:    
+     performPredictionOptimization()
+  except Exception as e:
+     print(e)   
+     continue   
 
 ```
