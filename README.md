@@ -352,6 +352,12 @@ def performPredictionOptimization():
       except Exception as e:
         y = json.loads(result)
       producerid=y['ProducerId']
+      
+      result=maads.vipersubscribeconsumer(VIPERTOKEN,VIPERHOST,VIPERPORT,producetotopic,companyname,
+                                          myname,myemail,mylocation,description,
+                                          brokerhost,brokerport,groupid,microserviceid)
+      print(result)
+
       #############################################################################################################
       #                                     START MATHEMATICAL OPTIMIZATION FROM ALGORITHM
       consumefrom="trainined-params"
