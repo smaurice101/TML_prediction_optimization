@@ -14,24 +14,25 @@ Pre-requisites:
 # For help email: support@otics.ca 
 
 # Import the core libraries
-import maads
+import maadstml
 
-# You may need to comment this out if NOT using jupyter notebook
-import nest_asyncio
+# Uncomment IF using jupyter notebook
+#import nest_asyncio
 
 import json
 
-# You may need to comment this out if NOT using jupyter notebook
-nest_asyncio.apply()
+# Uncomment IF using jupyter notebook
+#nest_asyncio.apply()
+
 # Set Global variables for VIPER and HPDE - You can change IP and Port for your setup of 
 # VIPER and HPDE
-VIPERHOST="http://192.168.0.14"
+VIPERHOST="http://127.0.0.1"
 VIPERPORT=8000
-hpdehost="http://192.168.0.14"
+hpdehost="http://127.0.0.1"
 hpdeport=8001
 
 # Set Global variable for Viper confifuration file - change the folder path for your computer
-viperconfigfile="C:/MAADS/Golang/go/bin/viper.env"
+viperconfigfile="C:/viper/viper.env"
 
 #############################################################################################################
 #                                      STORE VIPER TOKEN
@@ -39,7 +40,7 @@ viperconfigfile="C:/MAADS/Golang/go/bin/viper.env"
 # to your location of admin.tok
 def getparams():
         
-     with open("c:/maads/golang/go/bin/admin.tok", "r") as f:
+     with open("c:/viper/admin.tok", "r") as f:
         VIPERTOKEN=f.read()
   
      return VIPERTOKEN
@@ -80,7 +81,7 @@ def performPredictionOptimization():
 
       streamstojoin="viperdependentvariable,viperindependentvariable1,viperindependentvariable2"
       # Call MAADS python function to create joined stream topic
-      result=maads.vipercreatejointopicstreams(VIPERTOKEN,VIPERHOST,VIPERPORT,joinedtopic,
+      result=maadstml.vipercreatejointopicstreams(VIPERTOKEN,VIPERHOST,VIPERPORT,joinedtopic,
                           streamstojoin,companyname,myname,myemail,description,mylocation,
                           enabletls,brokerhost,brokerport,replication,numpartitions,microserviceid)
 
@@ -98,7 +99,7 @@ def performPredictionOptimization():
       # If subscribing to a group and add group id here
       groupid=''
       description="Topic contains joined data streams for transactional machine learning"
-      result=maads.vipersubscribeconsumer(VIPERTOKEN,VIPERHOST,VIPERPORT,joinedtopic,companyname,
+      result=maadstml.vipersubscribeconsumer(VIPERTOKEN,VIPERHOST,VIPERPORT,joinedtopic,companyname,
                                           myname,myemail,mylocation,description,
                                           brokerhost,brokerport,groupid,microserviceid)
       print(result)
@@ -126,7 +127,7 @@ def performPredictionOptimization():
       delay=10000
 
       # Call the Python function to produce data from all the streams
-      result=maads.viperproducetotopicstream(VIPERTOKEN,VIPERHOST,VIPERPORT,joinedtopic,producerid,
+      result=maadstml.viperproducetotopicstream(VIPERTOKEN,VIPERHOST,VIPERPORT,joinedtopic,producerid,
                                               startingoffset,rollbackoffsets,enabletls,
                                               delay,brokerhost,brokerport,microserviceid)
       try:
@@ -149,7 +150,7 @@ def performPredictionOptimization():
       producetotopic="trainingdata2"
       description="Topic containing the training dataset for TML"
 
-      result=maads.vipercreatetopic(VIPERTOKEN,VIPERHOST,VIPERPORT,producetotopic,companyname,
+      result=maadstml.vipercreatetopic(VIPERTOKEN,VIPERHOST,VIPERPORT,producetotopic,companyname,
                                      myname,myemail,mylocation,description,enabletls,
                                      brokerhost,brokerport,numpartitions,replication,microserviceid)
       # Load the JSON and get the producer id 
@@ -165,10 +166,10 @@ def performPredictionOptimization():
 
       consumefrom=joinedtopic
       description="Subscribing to training dataset"
-      result=maads.vipersubscribeconsumer(VIPERTOKEN,VIPERHOST,VIPERPORT,consumefrom,companyname,
+      result=maadstml.vipersubscribeconsumer(VIPERTOKEN,VIPERHOST,VIPERPORT,consumefrom,companyname,
                                           myname,myemail,mylocation,description,
                                           brokerhost,brokerport,groupid,microserviceid)
-      #print(result3)
+      print(result3)
       # Load the JSON and extract the consumerid
       try:
         y = json.loads(result,strict='False')
@@ -184,7 +185,7 @@ def performPredictionOptimization():
       # before backing out - for large datasets or slow internet connection you may
       # need to adjust this variable
       delay=60000
-      result=maads.vipercreatetrainingdata(VIPERTOKEN,VIPERHOST,VIPERPORT,consumefrom,producetotopic,
+      result=maadstml.vipercreatetrainingdata(VIPERTOKEN,VIPERHOST,VIPERPORT,consumefrom,producetotopic,
                                    dependentvariable,independentvariables, 
                                    consumerid,producerid,companyname,partition,
                                    enabletls,delay,brokerhost,brokerport,microserviceid)
@@ -203,7 +204,7 @@ def performPredictionOptimization():
 
       producetotopic="trainingdata2"
       description="Subscribing to training dataset topic"
-      result=maads.vipersubscribeconsumer(VIPERTOKEN,VIPERHOST,VIPERPORT,producetotopic,companyname,
+      result=maadstml.vipersubscribeconsumer(VIPERTOKEN,VIPERHOST,VIPERPORT,producetotopic,companyname,
                                           myname,myemail,mylocation,description,
                                           brokerhost,brokerport,groupid,microserviceid)
       try:
@@ -218,7 +219,7 @@ def performPredictionOptimization():
       consumefrom=producetotopic
       producetotopic="trainined-params"
       description="Topic to store the trained machine learning parameters"
-      result=maads.vipercreatetopic(VIPERTOKEN,VIPERHOST,VIPERPORT,producetotopic,companyname,
+      result=maadstml.vipercreatetopic(VIPERTOKEN,VIPERHOST,VIPERPORT,producetotopic,companyname,
                                      myname,myemail,mylocation,description,enabletls,
                                      brokerhost,brokerport,numpartitions,replication,
                                      microserviceid='')
@@ -245,7 +246,7 @@ def performPredictionOptimization():
       islogistic=0
       # set network timeout for communication between VIPER and HPDE in seconds
       networktimeout=200
-      result=maads.viperhpdetraining(VIPERTOKEN,VIPERHOST,VIPERPORT,consumefrom,producetotopic,
+      result=maadstml.viperhpdetraining(VIPERTOKEN,VIPERHOST,VIPERPORT,consumefrom,producetotopic,
                                       companyname,consumeridtrainingdata2,producerid, hpdehost,
                                       viperconfigfile,enabletls,partition_training,
                                       deploy,modelruns,hpdeport,offset,islogistic,
@@ -265,7 +266,7 @@ def performPredictionOptimization():
 
       producetotopic="trainined-params"
       description="Subscribing to trained machine learning parameters"
-      result=maads.vipersubscribeconsumer(VIPERTOKEN,VIPERHOST,VIPERPORT,producetotopic,companyname,
+      result=maadstml.vipersubscribeconsumer(VIPERTOKEN,VIPERHOST,VIPERPORT,producetotopic,companyname,
                                           myname,myemail,mylocation,description,
                                           brokerhost,brokerport,groupid,microserviceid)
       # Load the JSON and extract the consumer id
@@ -282,7 +283,7 @@ def performPredictionOptimization():
 
       producetotopic="hyper-predictions"
       description="Topic to store the predictions"
-      result=maads.vipercreatetopic(VIPERTOKEN,VIPERHOST,VIPERPORT,producetotopic,companyname,
+      result=maadstml.vipercreatetopic(VIPERTOKEN,VIPERHOST,VIPERPORT,producetotopic,companyname,
                                     myname,myemail,mylocation,description,enabletls,
                                     brokerhost,brokerport,numpartitions,replication,
                                     microserviceid)
@@ -298,7 +299,7 @@ def performPredictionOptimization():
       #############################################################################################################
       #                                     SUBSCRIBE TO STREAM PREDICTION TOPIC
 
-      result=maads.vipersubscribeconsumer(VIPERTOKEN,VIPERHOST,VIPERPORT,producetotopic,companyname,
+      result=maadstml.vipersubscribeconsumer(VIPERTOKEN,VIPERHOST,VIPERPORT,producetotopic,companyname,
                                           myname,myemail,mylocation,description,
                                           brokerhost,brokerport,groupid,microserviceid)
       print(result)
@@ -329,7 +330,7 @@ def performPredictionOptimization():
       # use the deployed algorithm - must exist in ./deploy folder
       usedeploy=1
       #Start predicting with new data streams
-      result6=maads.viperhpdepredict(VIPERTOKEN,VIPERHOST,VIPERPORT,consumefrom,producetotopic,
+      result6=maadstml.viperhpdepredict(VIPERTOKEN,VIPERHOST,VIPERPORT,consumefrom,producetotopic,
                                      companyname,consumeridtraininedparams,
                                      produceridhyperprediction, hpdehost,inputdata,mainalgokey,
                                      hpdetraining_partition,offset,enabletls,delay,hpdeport,
@@ -341,7 +342,7 @@ def performPredictionOptimization():
 
       producetotopic="hpde-optimal-parameters"
       description="Topic for optimization results"
-      result=maads.vipercreatetopic(VIPERTOKEN,VIPERHOST,VIPERPORT,producetotopic,companyname,
+      result=maadstml.vipercreatetopic(VIPERTOKEN,VIPERHOST,VIPERPORT,producetotopic,companyname,
                                     myname,myemail,mylocation,description,enabletls,
                                     brokerhost,brokerport,numpartitions,replication,
                                     microserviceid='')
@@ -353,7 +354,7 @@ def performPredictionOptimization():
         y = json.loads(result)
       producerid=y['ProducerId']
       
-      result=maads.vipersubscribeconsumer(VIPERTOKEN,VIPERHOST,VIPERPORT,producetotopic,companyname,
+      result=maadstml.vipersubscribeconsumer(VIPERTOKEN,VIPERHOST,VIPERPORT,producetotopic,companyname,
                                           myname,myemail,mylocation,description,
                                           brokerhost,brokerport,groupid,microserviceid)
       print(result)
@@ -378,7 +379,7 @@ def performPredictionOptimization():
       timeout=120
 
       # Start the optimization
-      result7=maads.viperhpdeoptimize(VIPERTOKEN,VIPERHOST,VIPERPORT,consumefrom,producetotopic,
+      result7=maadstml.viperhpdeoptimize(VIPERTOKEN,VIPERHOST,VIPERPORT,consumefrom,producetotopic,
                                       companyname,consumeridtraininedparams,
                                       producerid,hpdehost,hpdetraining_partition,
                                       offset,enabletls,delay,hpdeport,usedeploy,ismin,
@@ -398,4 +399,6 @@ for j in range(numpredictions):
      print(e)   
      continue   
 
+
 ```
+
