@@ -169,7 +169,7 @@ def performPredictionOptimization():
       result=maadstml.vipersubscribeconsumer(VIPERTOKEN,VIPERHOST,VIPERPORT,consumefrom,companyname,
                                           myname,myemail,mylocation,description,
                                           brokerhost,brokerport,groupid,microserviceid)
-      print(result3)
+      print(result)
       # Load the JSON and extract the consumerid
       try:
         y = json.loads(result,strict='False')
