@@ -185,11 +185,9 @@ def performPredictionOptimization():
       # before backing out - for large datasets or slow internet connection you may
       # need to adjust this variable
       delay=60000
-      partition=-1
-      maxrows=50
       result=maadstml.vipercreatetrainingdata(VIPERTOKEN,VIPERHOST,VIPERPORT,consumefrom,producetotopic,
                                    dependentvariable,independentvariables, 
-                                   consumerid,producerid,companyname,maxrows,partition,
+                                   consumerid,producerid,companyname,partition,
                                    enabletls,delay,brokerhost,brokerport,microserviceid)
 
       # Load the JSON object and extract the Kafka partition for the training dataset 
