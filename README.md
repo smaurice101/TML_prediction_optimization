@@ -86,7 +86,6 @@ def performPredictionOptimization():
                           streamstojoin,companyname,myname,myemail,description,mylocation,
                           enabletls,brokerhost,brokerport,replication,numpartitions,microserviceid)
 
-      print(result)
 
       #Load the JSON object and get producerid
       try:
@@ -103,7 +102,6 @@ def performPredictionOptimization():
       result=maadstml.vipersubscribeconsumer(VIPERTOKEN,VIPERHOST,VIPERPORT,joinedtopic,companyname,
                                           myname,myemail,mylocation,description,
                                           brokerhost,brokerport,groupid,microserviceid)
-      print(result)
       # Load the JSON object and extract the consumer id
       try:
         y = json.loads(result,strict='False')
@@ -119,7 +117,7 @@ def performPredictionOptimization():
 
       # Roll back each data stream by 50 offsets - change this to a larger number if you want more data
       # For supervised machine learning you need a minimum of 30 data points in each stream
-      rollbackoffsets=50
+      rollbackoffsets=20
       # Go to the last offset of each stream: If lastoffset=500, then this function will rollback the 
       # streams to offset=500-50=450
       startingoffset=-1
@@ -143,7 +141,7 @@ def performPredictionOptimization():
              partition=elements['Partition'] 
         except Exception as e:
           continue
-          
+
       #############################################################################################################
       #                           CREATE TOPIC TO SAVE TRAINING DATA SET FROM STREAM
 
@@ -159,8 +157,8 @@ def performPredictionOptimization():
         y = json.loads(result,strict='False')
       except Exception as e:
         y = json.loads(result)
-      producetotopic=y['Topic']
-      producerid=y['ProducerId']
+      producetotopic=y[0]['Topic']
+      producerid=y[0]['ProducerId']
 
       #############################################################################################################
       #                           CREATE TRAINING DATA SET FROM JOINED STREAM TOPIC
@@ -191,6 +189,7 @@ def performPredictionOptimization():
                                    consumerid,producerid,companyname,partition,
                                    enabletls,delay,brokerhost,brokerport,microserviceid)
 
+      print(result)
       # Load the JSON object and extract the Kafka partition for the training dataset 
       try:
         y = json.loads(result,strict='False')
@@ -229,8 +228,8 @@ def performPredictionOptimization():
         y = json.loads(result,strict='False')
       except Exception as e:
         y = json.loads(result)
-      producetotopic=y['Topic']
-      producerid=y['ProducerId']
+      producetotopic=y[0]['Topic']
+      producerid=y[0]['ProducerId']
 
       #############################################################################################################
       #                         VIPER CALLS HPDE TO PERFORM REAL_TIME MACHINE LEARNING ON TRAINING DATA 
@@ -294,7 +293,7 @@ def performPredictionOptimization():
         y = json.loads(result,strict='False')
       except Exception as e:
         y = json.loads(result)
-      produceridhyperprediction=y['ProducerId']
+      produceridhyperprediction=y[0]['ProducerId']
       print(produceridhyperprediction)
 
       #############################################################################################################
@@ -368,7 +367,7 @@ def performPredictionOptimization():
         y = json.loads(result,strict='False')
       except Exception as e:
         y = json.loads(result)
-      producerid=y['ProducerId']
+      producerid=y[0]['ProducerId']
       
       result=maadstml.vipersubscribeconsumer(VIPERTOKEN,VIPERHOST,VIPERPORT,producetotopic,companyname,
                                           myname,myemail,mylocation,description,
@@ -430,6 +429,7 @@ for j in range(numpredictions):
   except Exception as e:
      print(e)   
      continue   
+   
 
 
 ```
